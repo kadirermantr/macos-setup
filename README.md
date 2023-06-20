@@ -28,8 +28,8 @@
 
 ## Services
 
-- [brew php](https://formulae.brew.sh/formula/php)
-- [brew mysql](https://formulae.brew.sh/formula/mysql)
+- [php](https://formulae.brew.sh/formula/php)
+- [mysql](https://formulae.brew.sh/formula/mysql)
 
 ---
 
