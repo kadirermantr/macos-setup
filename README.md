@@ -2,11 +2,11 @@
 
 ## Tools
 
-- [iTerm2](https://iterm2.com/)
-- [Fig](https://fig.io/)
-- [Raycast](https://www.raycast.com/)
+- [iTerm2](https://iterm2.com/) ~ terminal emulator
+- [Fig](https://fig.io/) ~ command line
+- [Raycast](https://www.raycast.com/) ~ launcher
 - [XCode](https://developer.apple.com/xcode/)
-- [Homebrew](https://brew.sh/)
+- [Homebrew](https://brew.sh/) ~ package manager
 - [Hidden Bar](https://github.com/dwarvesf/hidden)
 - [JetBrains Toolbox](https://www.jetbrains.com/toolbox-app/)
 - [Lightshot Screenshot](https://app.prntscr.com/)
