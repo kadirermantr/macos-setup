@@ -1,5 +1,11 @@
 #!/bin/bash
 
+tools=(
+  iterm2
+  fig
+  raycast
+)
+
 packages=(
   php
   brew-php-switcher
@@ -9,12 +15,6 @@ packages=(
   nvm
   git
   composer
-)
-
-tools=(
-  iterm2
-  fig
-  raycast
 )
 
 # Install the Homebrew

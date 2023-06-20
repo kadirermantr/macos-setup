@@ -9,6 +9,14 @@ chmod +x install.sh
 bash install.sh
 ```
 
+## Tools
+
+- [Homebrew](https://brew.sh/) ~ package manager
+- [iTerm2](https://iterm2.com/) ~ terminal emulator
+- [Fig](https://fig.io/) ~ command line
+- [Raycast](https://www.raycast.com/) ~ launcher
+- [XCode](https://developer.apple.com/xcode/)
+
 ## Packages
 
 - [php](https://formulae.brew.sh/formula/php)
@@ -20,10 +28,3 @@ bash install.sh
 - [Git](https://git-scm.com/)
 - [Composer](https://getcomposer.org/)
 
-## Tools
-
-- [Homebrew](https://brew.sh/) ~ package manager
-- [iTerm2](https://iterm2.com/) ~ terminal emulator
-- [Fig](https://fig.io/) ~ command line
-- [Raycast](https://www.raycast.com/) ~ launcher
-- [XCode](https://developer.apple.com/xcode/)
