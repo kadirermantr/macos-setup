@@ -30,3 +30,17 @@
 
 - [brew php](https://formulae.brew.sh/formula/php)
 - [brew mysql](https://formulae.brew.sh/formula/mysql)
+
+---
+
+## Other
+
+### SSH Key
+
+```bash
+ssh-keygen
+pbcopy < ~/.ssh/id_rsa.pub
+```
+
+- [Add SSH Key to GitHub](https://github.com/settings/keys)
+- [Add SSH Key to Bitbucket](https://bitbucket.org/account/settings/ssh-keys/)
