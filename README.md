@@ -45,3 +45,10 @@ pbcopy < ~/.ssh/id_rsa.pub
 
 - [Add SSH Key to GitHub](https://github.com/settings/keys)
 - [Add SSH Key to Bitbucket](https://bitbucket.org/account/settings/ssh-keys/)
+
+### Git Config
+
+```bash
+git config --global user.name "Kadir Erman"
+git config --global user.email "kadirermantr@gmail.com"
+```
