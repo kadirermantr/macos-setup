@@ -1,5 +1,16 @@
 # MacOS Setup
 
+## Packages
+
+- [php](https://formulae.brew.sh/formula/php)
+- [brew-php-switcher](https://formulae.brew.sh/formula/brew-php-switcher)
+- [mysql](https://formulae.brew.sh/formula/mysql)
+- [redis](https://formulae.brew.sh/formula/redis)
+- [node](https://formulae.brew.sh/formula/node)
+- [nvm](https://formulae.brew.sh/formula/nvm)
+- [Git](https://git-scm.com/) ~ version control
+- [Composer](https://getcomposer.org/) ~ PHP dependency manager
+
 ## Tools
 
 - [Homebrew](https://brew.sh/) ~ package manager
@@ -9,17 +20,6 @@
 - [XCode](https://developer.apple.com/xcode/)
 - [JetBrains Toolbox](https://www.jetbrains.com/toolbox-app/)
 - [Lightshot Screenshot](https://app.prntscr.com/)
-- [Git](https://git-scm.com/) ~ version control
-- [Composer](https://getcomposer.org/) ~ PHP dependency manager
-
-## Packages
-
-- [php](https://formulae.brew.sh/formula/php)
-- [brew-php-switcher](https://formulae.brew.sh/formula/brew-php-switcher)
-- [mysql](https://formulae.brew.sh/formula/mysql)
-- [redis](https://formulae.brew.sh/formula/redis)
-- [node](https://formulae.brew.sh/formula/node)
-- [nvm](https://formulae.brew.sh/formula/nvm)
 
 ## Programs
 
