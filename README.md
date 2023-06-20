@@ -25,5 +25,5 @@ bash install.sh
 - [redis](https://formulae.brew.sh/formula/redis)
 - [node](https://formulae.brew.sh/formula/node)
 - [nvm](https://formulae.brew.sh/formula/nvm)
-- [git](https://git-scm.com/)
-- [composer](https://getcomposer.org/)
+- [git](https://formulae.brew.sh/formula/git)
+- [composer](https://formulae.brew.sh/formula/composer)
