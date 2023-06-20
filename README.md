@@ -1,4 +1,4 @@
-# MacOS Setup
+# macOS Setup
 
 ## Installation
 
@@ -25,6 +25,5 @@ bash install.sh
 - [redis](https://formulae.brew.sh/formula/redis)
 - [node](https://formulae.brew.sh/formula/node)
 - [nvm](https://formulae.brew.sh/formula/nvm)
-- [Git](https://git-scm.com/)
-- [Composer](https://getcomposer.org/)
-
+- [git](https://git-scm.com/)
+- [composer](https://getcomposer.org/)

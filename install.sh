@@ -50,7 +50,6 @@ for tool in "${tools[@]}"; do
 done
 
 # Install Xcode
-
 if ! xcode-select -p > /dev/null; then
   xcode-select --install
 else
