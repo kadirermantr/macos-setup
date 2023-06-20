@@ -1,5 +1,14 @@
 # MacOS Setup
 
+## Installation
+
+```bash
+git clone git@github.com:kadirermantr/macos-setup.git
+cd macos-setup
+chmod +x install.sh
+bash install.sh
+```
+
 ## Packages
 
 - [php](https://formulae.brew.sh/formula/php)
