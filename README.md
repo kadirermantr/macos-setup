@@ -2,7 +2,7 @@
 
 ## Tools
 
-- iTerm
+- iTerm2
 - Fig
 - Raycast
 - XCode
