@@ -30,6 +30,7 @@
 
 - [php](https://formulae.brew.sh/formula/php)
 - [mysql](https://formulae.brew.sh/formula/mysql)
+- [redis](https://formulae.brew.sh/formula/redis)
 
 ---
 
