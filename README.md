@@ -13,7 +13,7 @@
 - [Git](https://git-scm.com/) ~ version control
 - [Composer](https://getcomposer.org/) ~ PHP dependency manager
 
-## Services
+## Packages
 
 - [php](https://formulae.brew.sh/formula/php)
 - [brew-php-switcher](https://formulae.brew.sh/formula/brew-php-switcher)
