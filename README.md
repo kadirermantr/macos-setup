@@ -16,8 +16,11 @@
 ## Services
 
 - [php](https://formulae.brew.sh/formula/php)
+- [brew-php-switcher](https://formulae.brew.sh/formula/brew-php-switcher)
 - [mysql](https://formulae.brew.sh/formula/mysql)
 - [redis](https://formulae.brew.sh/formula/redis)
+- [node](https://formulae.brew.sh/formula/node)
+- [nvm](https://formulae.brew.sh/formula/nvm)
 
 ## Programs
 
