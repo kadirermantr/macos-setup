@@ -10,6 +10,8 @@
 - [Hidden Bar](https://github.com/dwarvesf/hidden)
 - [JetBrains Toolbox](https://www.jetbrains.com/toolbox-app/)
 - [Lightshot Screenshot](https://app.prntscr.com/)
+- [Git](https://git-scm.com/) ~ version control
+- [Composer](https://getcomposer.org/) ~ PHP dependency manager
 
 ## Programs
 
