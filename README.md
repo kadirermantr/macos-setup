@@ -26,3 +26,4 @@ bash install.sh
 - [iTerm2](https://iterm2.com/) ~ terminal emulator
 - [Fig](https://fig.io/) ~ command line
 - [Raycast](https://www.raycast.com/) ~ launcher
+- [XCode](https://developer.apple.com/xcode/)

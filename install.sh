@@ -48,3 +48,11 @@ for tool in "${tools[@]}"; do
     brew install --cask "$tool"
   fi
 done
+
+# Install Xcode
+
+if ! xcode-select -p > /dev/null; then
+  xcode-select --install
+else
+  echo "Xcode already installed... skipping."
+fi
