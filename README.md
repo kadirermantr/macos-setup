@@ -2,16 +2,22 @@
 
 ## Tools
 
+- [Homebrew](https://brew.sh/) ~ package manager
 - [iTerm2](https://iterm2.com/) ~ terminal emulator
 - [Fig](https://fig.io/) ~ command line
 - [Raycast](https://www.raycast.com/) ~ launcher
 - [XCode](https://developer.apple.com/xcode/)
-- [Homebrew](https://brew.sh/) ~ package manager
 - [Hidden Bar](https://github.com/dwarvesf/hidden)
 - [JetBrains Toolbox](https://www.jetbrains.com/toolbox-app/)
 - [Lightshot Screenshot](https://app.prntscr.com/)
 - [Git](https://git-scm.com/) ~ version control
 - [Composer](https://getcomposer.org/) ~ PHP dependency manager
+
+## Services
+
+- [php](https://formulae.brew.sh/formula/php)
+- [mysql](https://formulae.brew.sh/formula/mysql)
+- [redis](https://formulae.brew.sh/formula/redis)
 
 ## Programs
 
@@ -25,12 +31,6 @@
 - [TablePlus](https://tableplus.com/)
 - [MongoDB Compass](https://www.mongodb.com/products/compass)
 - [Postman](https://www.postman.com/)
-
-## Services
-
-- [php](https://formulae.brew.sh/formula/php)
-- [mysql](https://formulae.brew.sh/formula/mysql)
-- [redis](https://formulae.brew.sh/formula/redis)
 
 ---
 
