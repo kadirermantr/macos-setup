@@ -2,7 +2,7 @@ repo_name: kadirermantr/macos-setup
 report_id: df1b7b3d3a8360fab09d3f2c658f4adc
 version: 0.1
 repo_type: Public
-timestamp: '2023-12-17T20:12:36+00:00'
+timestamp: '2024-01-05T08:21:07+00:00'
 requested_by: kadirermantr
 provider: github
 branch: main
@@ -16,6 +16,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/kadirermantr/macos-setup
   detection_source: Repo Metadata
 - name: Shell
   description: A shell is a text-based terminal, used for manipulating programs and
@@ -26,4 +27,5 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png
+  detection_source_url: https://github.com/kadirermantr/macos-setup
   detection_source: Repo Metadata
