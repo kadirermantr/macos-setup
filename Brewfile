@@ -44,9 +44,6 @@ brew "oxipng"              # PNG lossless optimization
 brew "jq"                  # JSON processor
 brew "ripgrep"             # fast recursive search (rg)
 
-# AI / local LLM
-brew "ollama"              # local LLM runtime
-
 # Shell / system
 brew "powerlevel10k"       # zsh prompt theme
 brew "sleepwatcher"        # run scripts on sleep/wake
