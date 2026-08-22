@@ -17,7 +17,8 @@ brew bundle install --file=Brewfile                   # packages only
 brew bundle check --file=Brewfile --verbose           # what's missing, installs nothing
 brew bundle dump --file=Brewfile --force --describe   # re-capture current system (destroys the section layout; diff, don't accept blindly)
 bash -n install.sh && bash -n defaults.sh             # syntax check
-shellcheck install.sh defaults.sh                     # lint (shellcheck is not in the Brewfile; brew install it if needed)
+shellcheck install.sh defaults.sh                     # lint (shellcheck is in the Brewfile)
+brew bundle list --file=Brewfile >/dev/null           # Brewfile parse check
 ```
 
 There is no test suite. Verification is running the scripts on a real machine, or `bash -n` /
@@ -35,11 +36,24 @@ Brewfile.
   preference that needs `sudo` doesn't belong there without changing the script's contract, which
   the README states as well.
 - **Step order in `install.sh` is load-bearing:** Xcode CLT, Rosetta (arm64 only), Homebrew,
-  `brew shellenv`, Brewfile, defaults. `brew shellenv` is evaluated inline because `brew` is not
-  yet on `PATH` in the same shell right after a fresh install; the Apple Silicon
-  (`/opt/homebrew`) and Intel (`/usr/local`) prefixes are both handled.
+  `brew shellenv`, tap trust, Brewfile, defaults. `brew shellenv` is evaluated inline because
+  `brew` is not yet on `PATH` in the same shell right after a fresh install; the Apple Silicon
+  (`/opt/homebrew`) and Intel (`/usr/local`) prefixes are both handled, and a final `else`
+  aborts loudly rather than letting every later `brew` call fail one by one.
+- **Third-party taps must be trusted before bundling.** Homebrew 6 refuses to load formulae from
+  untrusted taps, and `brew bundle` counts that as a skip rather than an error, so packages
+  silently never install while the run still reports success. `install.sh` parses the `tap` lines
+  out of the Brewfile and runs `brew trust --tap` on each. There is no Brewfile syntax for this:
+  a `trusted: true` option on the tap line does **not** work (verified 2026-08-22).
+- **`brew bundle install` exits 0 even when it skipped entries**, which is why the script ends with
+  an explicit `brew bundle check` and a collected-warnings summary instead of trusting exit codes.
 - **Missing CLT exits 1 on purpose.** `xcode-select --install` opens a GUI dialog the script cannot
-  wait on, so the run stops and asks the user to re-run.
+  wait on, so the run stops and asks the user to re-run. Detection uses `pkgutil --pkg-info
+  com.apple.pkg.CLTools_Executables`, not `xcode-select -p`, which only proves a developer
+  directory is set.
+- **macOS ships bash 3.2.** `"${arr[@]}"` on an empty array is an unbound-variable fatal under
+  `set -u` there, so array expansions need a `:-` fallback. Test any new bash construct with
+  `/bin/bash`, not a Homebrew bash 5.
 
 ## Brewfile conventions
 
@@ -53,8 +67,12 @@ Brewfile.
 
 ## Repo conventions
 
-- `Brewfile.lock.json` is gitignored and `install.sh` deliberately avoids writing one. This repo
+- `Brewfile.lock.json` is gitignored and `install.sh` suppresses it via
+  `HOMEBREW_BUNDLE_NO_LOCK=1`. The old `--no-lock` flag no longer exists in Homebrew 6. This repo
   tracks intent, not pinned versions.
+- **Deprecated formulae get disabled on a date, so pinned major versions rot.** `node@20`
+  (disabled 2026-10-28) and `php@8.1` (disabled 2026-12-31) were both live in the Brewfile until
+  2026-08-22. Check `brew info <formula> | grep -i deprecat` before pinning a versioned formula.
 - README is the user-facing doc and mirrors the Brewfile contents. When adding or removing a
   notable package or a `defaults.sh` setting, update the corresponding README section in the same
   change.
