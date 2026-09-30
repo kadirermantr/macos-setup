@@ -43,6 +43,11 @@ packages through `install.sh` (or set `HOMEBREW_BUNDLE_NO_UPGRADE=1`) on a machi
 - **`defaults.sh` writes only through `set_default`**, which compares the current value first and
   records which app has to restart. Add new settings the same way, with that app as the fifth
   argument, so a second run still writes nothing and restarts nothing.
+- **Claude Code comes from the native installer, not a cask.** `curl -fsSL
+  https://claude.ai/install.sh | bash` puts a self-updating launcher in `~/.local/bin`; the
+  `claude-code` cask trails the stable channel by about a week, never updates itself, and next to
+  a native install leaves two `claude` binaries on PATH. The step skips when either `claude` is on
+  PATH or `~/.local/bin/claude` exists.
 - **`set -euo pipefail` is on in both scripts**, so a failing command aborts everything. Steps that
   are allowed to fail partially are explicitly suffixed with `|| log_warn ...` (Brewfile install,
   defaults) or `|| true` (the `killall` calls). Keep that pattern rather than removing the trap.
@@ -50,7 +55,7 @@ packages through `install.sh` (or set `HOMEBREW_BUNDLE_NO_UPGRADE=1`) on a machi
   preference that needs `sudo` doesn't belong there without changing the script's contract, which
   the README states as well.
 - **Step order in `install.sh` is load-bearing:** Xcode CLT, Rosetta (arm64 only), Homebrew,
-  `brew shellenv`, tap trust, Brewfile, defaults. `brew shellenv` is evaluated inline because
+  `brew shellenv`, tap trust, Brewfile, Claude Code, defaults. `brew shellenv` is evaluated inline because
   `brew` is not yet on `PATH` in the same shell right after a fresh install. `find_brew` looks in
   the Apple Silicon (`/opt/homebrew`) and Intel (`/usr/local`) prefixes before `PATH`, so a shell
   without shellenv never re-runs the installer over a working install, and the script aborts

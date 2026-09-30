@@ -6,7 +6,7 @@ Personal macOS bootstrap: one command to set up a fresh Mac with my tools, apps,
 
 | File | Purpose |
 |------|---------|
-| `install.sh` | Orchestrator: Xcode CLT → Rosetta → Homebrew → tap trust → `brew bundle` → defaults |
+| `install.sh` | Orchestrator: Xcode CLT → Rosetta → Homebrew → tap trust → `brew bundle` → Claude Code → defaults |
 | `Brewfile` | Declarative list of formulae, casks, taps, fonts and Mac App Store apps |
 | `defaults.sh` | Opinionated macOS system preferences (keyboard, Finder, Dock, screenshots) |
 
@@ -22,7 +22,7 @@ On a brand-new Mac the first `git` command opens the Command Line Tools installe
 
 | Command | What it does |
 |---------|--------------|
-| `./install.sh` | Installs whatever the Brewfile declares but is missing, then applies `defaults.sh` |
+| `./install.sh` | Installs whatever the Brewfile declares but is missing, plus Claude Code, then applies `defaults.sh` |
 | `./install.sh --check` | Changes nothing: lists what a real run would install and which defaults differ |
 | `./install.sh --upgrade` | Also upgrades outdated Brewfile entries (formulae, casks, App Store apps) |
 
@@ -36,7 +36,7 @@ At the end the script prints every warning it collected and runs `brew bundle ch
 
 ## What gets installed
 
-Everything is declared in `Brewfile`. Open it to see (and comment out) anything you don't want. Highlights:
+Everything except Claude Code is declared in `Brewfile`. Open it to see (and comment out) anything you don't want. Highlights:
 
 - **Dev CLIs:** git, gh, git-lfs, svn, bfg, gnupg, jq, ripgrep, mas, shellcheck
 - **Languages/runtimes:** node, php@8.2 (linked as the default `php`), composer, openjdk
@@ -47,6 +47,7 @@ Everything is declared in `Brewfile`. Open it to see (and comment out) anything 
 - **GUI (dev):** Raycast, iTerm2, VS Code, JetBrains Toolbox, Docker Desktop, Postman, TablePlus, MongoDB Compass, Obsidian, Shottr, .NET SDK, Claude
 - **GUI (personal):** Chrome, Slack, Spotify, WhatsApp, AnyDesk, OpenVPN
 - **App Store:** Keynote, Numbers, Pages, Excel, Outlook, MorningPages, Hidden Bar
+- **Claude Code:** installed with Anthropic's native installer instead of the `claude-code` cask, because the native build updates itself while the cask trails the stable channel and needs `brew upgrade`
 
 Commented-out entries are opt-in: `rtk`, XAMPP and Microsoft's SQL Server ODBC tap. XAMPP is off because it ships its own MySQL on port 3306 and collides with the `mysql` formula; uncomment it only if you need the Apache/PHP stack.
 
@@ -105,6 +106,7 @@ Use `/bin/bash` explicitly: macOS ships bash 3.2, and a Homebrew bash 5 on `PATH
   `source "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme"` then run `p10k configure`.
   Use `$(brew --prefix)` rather than a hardcoded `/opt/homebrew`, or the line breaks on Intel Macs.
 - Select the **MesloLGS NF** font in iTerm2 / your terminal.
+- Claude Code: run `claude` once to log in. If a new terminal cannot find it, add `export PATH="$HOME/.local/bin:$PATH"` to `~/.zshenv`; install.sh warns when that is missing.
 - Turn on zoxide and fzf by adding `eval "$(zoxide init zsh)"` (the `z` command) and `source <(fzf --zsh)` (key bindings and completion) to `~/.zshrc`.
 - PHP: `php@8.2` stays the default `php` even though composer pulls in the latest `php` as a dependency. To switch to the newest version, drop `link: :overwrite` from the `php@8.2` entry, then run `brew unlink php@8.2 && brew link --overwrite php`.
 - Java: `openjdk` is keg-only, so macOS's `java` wrappers cannot see it until you run `sudo ln -sfn "$(brew --prefix)/opt/openjdk/libexec/openjdk.jdk" /Library/Java/JavaVirtualMachines/openjdk.jdk`.
