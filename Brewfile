@@ -1,4 +1,4 @@
-# Brewfile — declarative macOS package manifest.
+# Brewfile: declarative macOS package manifest.
 # Run with:  brew bundle install --file=Brewfile
 # Re-capture current system with:  brew bundle dump --file=Brewfile --force --describe
 #
@@ -17,10 +17,13 @@
 # `brew bundle` is built into Homebrew now; the old homebrew/bundle tap is gone.
 tap "mongodb/brew"
 tap "supabase/tap"
-tap "microsoft/mssql-release"
+# Microsoft's SQL Server ODBC tap stays off: nothing below installs from it, and a
+# trusted tap is code that runs on this machine. To use it, uncomment it and add an
+# entry such as microsoft/mssql-release/msodbcsql18 (install with HOMEBREW_ACCEPT_EULA=Y).
+# tap "microsoft/mssql-release"
 
 # ---------------------------------------------------------------------------
-# CLI tools (formulae) — development
+# CLI tools (formulae): development
 # ---------------------------------------------------------------------------
 brew "git"                 # version control
 brew "git-lfs"             # large file storage for git
@@ -29,12 +32,16 @@ brew "bfg"                 # fast git history cleaner (remove secrets/large file
 brew "subversion"          # svn (WordPress.org plugin SVN, etc.)
 brew "mas"                 # Mac App Store CLI (needed for the `mas` entries below)
 brew "gnupg"               # commit signing / encryption
+brew "jq"                  # JSON processor
+brew "ripgrep"             # fast recursive search (rg)
 
 # Languages & runtimes
 brew "node"                # Node.js (current; node@20 is EOL and gets disabled 2026-10-28)
-brew "php@8.2"             # PHP 8.2 (keg-only; php@8.1 is EOL and gets disabled 2026-12-31)
+# php@8.2 is keg-only, and without `link:` brew bundle UNLINKS it, while composer
+# pulls in and links the latest `php`. `:overwrite` keeps 8.2 as the default php.
+brew "php@8.2", link: :overwrite  # PHP 8.2 (upstream security support ends 2026-12-31)
 brew "composer"            # PHP dependency manager
-brew "openjdk"             # JDK (bfg and other JVM tools need it)
+brew "openjdk"             # JDK (keg-only; macOS's java wrappers need the README post-install symlink)
 
 # Databases
 brew "mysql"               # MySQL server + client
@@ -51,8 +58,6 @@ brew "poppler"             # PDF utilities
 brew "librsvg"             # SVG rasterizer (rsvg-convert)
 brew "pngquant"            # PNG lossy compression
 brew "oxipng"              # PNG lossless optimization
-brew "jq"                  # JSON processor
-brew "ripgrep"             # fast recursive search (rg)
 
 # Shell / system
 brew "powerlevel10k"       # zsh prompt theme
@@ -61,7 +66,7 @@ brew "shellcheck"          # shell linter (used to check this repo's own scripts
 
 # Personal / custom
 brew "mole"                # mac cleanup/optimization utility
-# brew "rtk"               # custom LLM token-optimization proxy (private tap — add tap before enabling)
+# brew "rtk"               # LLM token-optimization CLI proxy (in homebrew-core; opt-in)
 
 # ---------------------------------------------------------------------------
 # Modern CLI tools
@@ -76,9 +81,9 @@ brew "btop"                # modern top/htop
 brew "tlrc"                # tldr client (simplified man pages)
 
 # ---------------------------------------------------------------------------
-# GUI apps (casks) — development & work
+# GUI apps (casks): development & work
 # ---------------------------------------------------------------------------
-cask "raycast"             # launcher / productivity
+cask "raycast"             # launcher / productivity (Apple Silicon only)
 cask "iterm2"              # terminal emulator
 cask "visual-studio-code"  # editor
 cask "jetbrains-toolbox"   # manages PhpStorm / PyCharm / Rider / Fleet
@@ -99,7 +104,7 @@ cask "claude"              # Claude desktop
 cask "font-meslo-lg-nerd-font"  # Nerd Font for Powerlevel10k
 
 # ---------------------------------------------------------------------------
-# GUI apps (casks) — personal / everyday (comment out on work machines)
+# GUI apps (casks): personal / everyday (comment out on work machines)
 # ---------------------------------------------------------------------------
 cask "google-chrome"
 cask "slack"

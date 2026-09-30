@@ -1,66 +1,151 @@
 #!/bin/bash
 #
-# defaults.sh — opinionated macOS system preferences.
-# All commands are user-level (no sudo). Safe to re-run.
+# defaults.sh: opinionated macOS system preferences.
+# All commands are user-level (no sudo). Safe to re-run: a value is written only
+# when it differs from the current one, and only the apps whose settings changed
+# are restarted, so a second run changes nothing.
+#
+# Usage: ./defaults.sh [--dry-run]
 #
 set -euo pipefail
 
-echo "Applying macOS defaults..."
+DRY_RUN=0
+case "${1:-}" in
+  "") ;;
+  -n|--dry-run) DRY_RUN=1 ;;
+  -h|--help)
+    echo "Usage: ./defaults.sh [--dry-run]"
+    echo "  --dry-run  List the settings that differ from this script; write nothing."
+    exit 0
+    ;;
+  *)
+    echo "Unknown option: $1 (try --help)" >&2
+    exit 2
+    ;;
+esac
+
+CHANGED=0
+UNCHANGED=0
+# Apps to restart, space-separated (bash 3.2 has no associative arrays).
+RESTART=""
+
+# set_default <domain> <key> <-bool|-int|-float|-string> <value> [app to restart]
+set_default() {
+  local domain="$1" key="$2" type="$3" value="$4" app="${5:-}"
+  local current shown expected="$4"
+
+  # `defaults read` prints booleans as 1/0.
+  if [ "${type}" = "-bool" ]; then
+    if [ "${value}" = "true" ]; then expected=1; else expected=0; fi
+  fi
+
+  current="$(defaults read "${domain}" "${key}" 2>/dev/null)" || current="(unset)"
+
+  if [ "${current}" = "${expected}" ]; then
+    UNCHANGED=$((UNCHANGED + 1))
+    return 0
+  fi
+
+  shown="${current}"
+  if [ "${type}" = "-bool" ]; then
+    case "${current}" in
+      1) shown="true" ;;
+      0) shown="false" ;;
+    esac
+  fi
+
+  CHANGED=$((CHANGED + 1))
+
+  if [ "${DRY_RUN}" -eq 1 ]; then
+    echo "  would set ${domain} ${key}: ${shown} -> ${value}"
+    return 0
+  fi
+
+  defaults write "${domain}" "${key}" "${type}" "${value}"
+  echo "  set ${domain} ${key}: ${shown} -> ${value}"
+
+  if [ -n "${app}" ]; then
+    case " ${RESTART} " in
+      *" ${app} "*) ;;
+      *) RESTART="${RESTART} ${app}" ;;
+    esac
+  fi
+}
+
+if [ "${DRY_RUN}" -eq 1 ]; then
+  echo "Checking macOS defaults (dry run, nothing is written)..."
+else
+  echo "Applying macOS defaults..."
+fi
 
 # ---------------------------------------------------------------------------
 # Keyboard
 # ---------------------------------------------------------------------------
 # Fast key repeat and short delay (great for coding; lower = faster).
-defaults write NSGlobalDomain KeyRepeat -int 2
-defaults write NSGlobalDomain InitialKeyRepeat -int 15
+set_default NSGlobalDomain KeyRepeat -int 2
+set_default NSGlobalDomain InitialKeyRepeat -int 15
 # Disable press-and-hold accent popup so key repeat works everywhere.
-defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+set_default NSGlobalDomain ApplePressAndHoldEnabled -bool false
 # Turn off the "smart" substitutions that corrupt code and terminal input.
-defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
-defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
-defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
-defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+set_default NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+set_default NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+set_default NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+set_default NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
 
 # ---------------------------------------------------------------------------
 # Finder
 # ---------------------------------------------------------------------------
 # Show hidden files, all extensions, path bar and status bar.
-defaults write com.apple.finder AppleShowAllFiles -bool true
-defaults write NSGlobalDomain AppleShowAllExtensions -bool true
-defaults write com.apple.finder ShowPathbar -bool true
-defaults write com.apple.finder ShowStatusBar -bool true
+set_default com.apple.finder AppleShowAllFiles -bool true Finder
+set_default NSGlobalDomain AppleShowAllExtensions -bool true Finder
+set_default com.apple.finder ShowPathbar -bool true Finder
+set_default com.apple.finder ShowStatusBar -bool true Finder
 # Search the current folder by default (not the whole Mac).
-defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+set_default com.apple.finder FXDefaultSearchScope -string "SCcf" Finder
 # Keep folders on top and skip the warning when changing a file extension.
-defaults write com.apple.finder _FXSortFoldersFirst -bool true
-defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+set_default com.apple.finder _FXSortFoldersFirst -bool true Finder
+set_default com.apple.finder FXEnableExtensionChangeWarning -bool false Finder
 # Don't write .DS_Store files on network or USB volumes.
-defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+set_default com.apple.desktopservices DSDontWriteNetworkStores -bool true Finder
+set_default com.apple.desktopservices DSDontWriteUSBStores -bool true Finder
 
 # ---------------------------------------------------------------------------
 # Dock
 # ---------------------------------------------------------------------------
-defaults write com.apple.dock autohide -bool true
-defaults write com.apple.dock autohide-delay -float 0
-defaults write com.apple.dock tilesize -int 48
-defaults write com.apple.dock show-recents -bool false
+# Always visible; the delay only matters if autohide is turned back on.
+set_default com.apple.dock autohide -bool false Dock
+set_default com.apple.dock autohide-delay -float 0 Dock
+set_default com.apple.dock tilesize -int 62 Dock
+set_default com.apple.dock show-recents -bool false Dock
 
 # ---------------------------------------------------------------------------
 # Screenshots
 # ---------------------------------------------------------------------------
 # Save screenshots to ~/Screenshots as PNG without the drop shadow, so they stop
 # piling up in ~/Downloads next to real downloads.
-mkdir -p "${HOME}/Screenshots"
-defaults write com.apple.screencapture location -string "${HOME}/Screenshots"
-defaults write com.apple.screencapture type -string "png"
-defaults write com.apple.screencapture disable-shadow -bool true
+if [ "${DRY_RUN}" -eq 0 ]; then
+  mkdir -p "${HOME}/Screenshots"
+fi
+set_default com.apple.screencapture location -string "${HOME}/Screenshots" SystemUIServer
+set_default com.apple.screencapture type -string "png" SystemUIServer
+set_default com.apple.screencapture disable-shadow -bool true SystemUIServer
 
 # ---------------------------------------------------------------------------
 # Apply changes
 # ---------------------------------------------------------------------------
-killall Dock 2>/dev/null || true
-killall Finder 2>/dev/null || true
-killall SystemUIServer 2>/dev/null || true
+if [ "${DRY_RUN}" -eq 1 ]; then
+  echo "Dry run: ${CHANGED} setting(s) would change, ${UNCHANGED} already set."
+  exit 0
+fi
 
-echo "macOS defaults applied. Some changes may require a logout/restart."
+# Word splitting is intended: RESTART is a space-separated list of app names.
+for app in ${RESTART}; do
+  killall "${app}" 2>/dev/null || true
+done
+
+if [ "${CHANGED}" -eq 0 ]; then
+  echo "macOS defaults already applied (${UNCHANGED} settings); nothing changed."
+else
+  echo "macOS defaults: ${CHANGED} changed, ${UNCHANGED} already set.${RESTART:+ Restarted:${RESTART}.}"
+  echo "Some changes may require a logout/restart."
+fi

@@ -1,0 +1,39 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # /bin/bash is the stock bash 3.2 the scripts have to run under.
+      - name: Syntax check (bash 3.2)
+        run: |
+          /bin/bash -n install.sh
+          /bin/bash -n defaults.sh
+
+      - name: ShellCheck
+        run: |
+          brew install shellcheck
+          shellcheck install.sh defaults.sh
+
+      - name: Validate Brewfile is parseable
+        run: brew bundle list --file=Brewfile >/dev/null
+
+      # Both modes only read, so they exercise the scripts under bash 3.2 without changing the runner.
+      - name: Smoke test read-only modes
+        run: |
+          /bin/bash install.sh --help >/dev/null
+          /bin/bash defaults.sh --dry-run

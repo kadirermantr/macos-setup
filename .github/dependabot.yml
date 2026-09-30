@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # The only versioned dependencies GitHub can track here are the workflow actions;
+  # Dependabot has no Homebrew ecosystem, so the Brewfile stays a manual review.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "ci"
