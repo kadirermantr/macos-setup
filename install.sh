@@ -2,7 +2,7 @@
 #
 # install.sh: bootstrap a macOS machine.
 #
-# Order matters: Xcode CLT -> Rosetta -> Homebrew -> shellenv -> tap trust -> Brewfile -> defaults.
+# Order matters: Xcode CLT -> Rosetta -> Homebrew -> shellenv -> tap trust -> Brewfile -> Claude Code -> defaults.
 # Safe to re-run (idempotent): missing items are installed, installed ones stay at
 # their current version unless --upgrade is passed.
 #
@@ -15,8 +15,8 @@ usage() {
   cat <<'EOF'
 Usage: ./install.sh [--check] [--upgrade]
 
-  (no option)  Install whatever the Brewfile declares but is missing, then apply
-               defaults.sh. Installed packages stay at their current version.
+  (no option)  Install whatever the Brewfile declares but is missing, plus Claude Code,
+               then apply defaults.sh. Installed packages stay at their current version.
   --upgrade    Also upgrade outdated Brewfile entries (formulae, casks, App Store apps).
   --check      Change nothing: report what is missing and which macOS defaults differ.
   -h, --help   Show this help.
@@ -66,7 +66,7 @@ log_success() { echo -e "${GREEN}✓${NC} $1"; }
 log_warn()    { echo -e "${YELLOW}!${NC} $1"; }
 log_error()   { echo -e "${RED}✗${NC} $1" >&2; }
 
-TOTAL_STEPS=7
+TOTAL_STEPS=8
 STEP=0
 step() { STEP=$((STEP + 1)); echo; echo -e "${BOLD}[${STEP}/${TOTAL_STEPS}] $1${NC}"; }
 
@@ -233,7 +233,30 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 6. macOS defaults
+# 6. Claude Code
+# ---------------------------------------------------------------------------
+# Anthropic's native installer, not the claude-code cask: it updates itself in the
+# background, and a cask next to it would put a second `claude` on PATH.
+step "Claude Code"
+if command -v claude >/dev/null 2>&1 || [ -x "${HOME}/.local/bin/claude" ]; then
+  log_success "Already installed."
+elif [ "${CHECK_ONLY}" -eq 1 ]; then
+  warn "Claude Code is not installed."
+else
+  log_info "Installing Claude Code..."
+  curl -fsSL https://claude.ai/install.sh | bash || warn "Claude Code install failed."
+fi
+
+# The launcher lives in ~/.local/bin, which a new Mac does not have on PATH.
+if [ -x "${HOME}/.local/bin/claude" ]; then
+  case ":${PATH}:" in
+    *":${HOME}/.local/bin:"*) ;;
+    *) warn "claude is in ~/.local/bin, which is not on PATH; add 'export PATH=\"\$HOME/.local/bin:\$PATH\"' to ~/.zshenv." ;;
+  esac
+fi
+
+# ---------------------------------------------------------------------------
+# 7. macOS defaults
 # ---------------------------------------------------------------------------
 step "macOS defaults"
 if [ ! -f "${SCRIPT_DIR}/defaults.sh" ]; then
@@ -245,7 +268,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 7. Report what is still missing
+# 8. Report what is still missing
 # ---------------------------------------------------------------------------
 # `brew bundle install` exits 0 even when it skipped entries, so ask explicitly
 # rather than trusting the exit code.
@@ -303,5 +326,6 @@ log_info "Manual follow-ups (details in the README's Post-install section):"
 echo "  • Sign in to the Mac App Store if the App Store apps above failed: free apps are fetched for you, paid ones must be bought once first."
 echo "  • Set Powerlevel10k: add 'source \$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme' to ~/.zshrc, then run 'p10k configure'."
 echo "  • Set the MesloLGS NF font in your terminal."
+echo "  • Run 'claude' once to log in to Claude Code."
 echo "  • Enable zoxide and fzf in ~/.zshrc, and symlink the JDK if macOS's java wrappers need it."
 echo "  • Configure Raycast, iTerm2 and JetBrains Toolbox sign-in manually."
